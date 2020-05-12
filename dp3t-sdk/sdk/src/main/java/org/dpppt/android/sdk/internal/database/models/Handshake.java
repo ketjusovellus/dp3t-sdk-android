@@ -22,8 +22,11 @@ public class Handshake {
 	private String secondaryPhy;
 	private long timestampNanos;
 
+	private String ketjuUserPrefix;
+	private double ketjuDistance;
+
 	public Handshake(int id, long timestamp, EphId ephId, int txPowerLevel, int rssi, String primaryPhy, String secondaryPhy,
-			long timestampNanos) {
+			long timestampNanos, String ketjuUserPrefix, double ketjuDistance) {
 		this.id = id;
 		this.timestamp = timestamp;
 		this.ephId = ephId;
@@ -33,6 +36,9 @@ public class Handshake {
 		this.primaryPhy = primaryPhy;
 		this.secondaryPhy = secondaryPhy;
 		this.timestampNanos = timestampNanos;
+
+		this.ketjuUserPrefix = ketjuUserPrefix;
+		this.ketjuDistance = ketjuDistance;
 	}
 
 	public EphId getEphId() {
@@ -71,4 +77,11 @@ public class Handshake {
 		return txPowerLevel - rssi;
 	}
 
+	public String getKetjuUserPrefix() {
+		return ketjuUserPrefix;
+	}
+
+	public double getKetjuDistance() {
+		return ketjuDistance;
+	}
 }

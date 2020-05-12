@@ -63,12 +63,13 @@ public class BleServer {
 			for (int i = 0; i < AppConfigManager.CALIBRATION_TEST_DEVICE_NAME_LENGTH; i++) {
 				advertiseData[i] = nameBytes[i];
 			}
-			long curMinInEpoch = ((System.currentTimeMillis() - cryptoModule.getCurrentEpochStart()) / (60 * 1000));
-			byte[] minData = Long.toString(curMinInEpoch).getBytes();
-			advertiseData[AppConfigManager.CALIBRATION_TEST_DEVICE_NAME_LENGTH] = minData[0];
-			if (minData.length > 1) {
-				advertiseData[AppConfigManager.CALIBRATION_TEST_DEVICE_NAME_LENGTH + 1] = minData[1];
-			}
+			// No need to replace any epoch/timestamp related data into EphID, so leave it out.
+//            long curMinInEpoch = ((System.currentTimeMillis() - cryptoModule.getCurrentEpochStart()) / (60 * 1000));
+//            byte[] minData = Long.toString(curMinInEpoch).getBytes();
+//            advertiseData[AppConfigManager.CALIBRATION_TEST_DEVICE_NAME_LENGTH] = minData[0];
+//            if (minData.length > 1) {
+//                advertiseData[AppConfigManager.CALIBRATION_TEST_DEVICE_NAME_LENGTH + 1] = minData[1];
+//            }
 		}
 		return advertiseData;
 	}

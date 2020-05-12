@@ -19,6 +19,7 @@ import androidx.security.crypto.MasterKeys;
 import java.io.IOException;
 import java.security.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -211,12 +212,21 @@ public class CryptoModule {
 			List<Contact> contactsOnDay = contactCallback.getContacts(contactTimeFrom, contactTimeUntil);
 			if (contactsOnDay.size() > 0) {
 				//generate all ephIds for day
-				HashSet<EphId> ephIdHashSet = new HashSet<>(createEphIds(skForDay, false));
+				List<EphId> skEphIds = createEphIds(skForDay, false);
 
 				//check all contacts if they match any of the ephIds
 				for (Contact contact : contactsOnDay) {
-					if (ephIdHashSet.contains(contact.getEphId())) {
-						matchCallback.contactMatched(contact);
+					byte[] contactEphId = contact.getEphId().getData();
+					byte[] prefixlessEphId = Arrays.copyOfRange(contactEphId, 4, contactEphId.length);
+
+					for (EphId skEphId : skEphIds) {
+						byte[] skEphIdData = skEphId.getData();
+						byte[] ephId = Arrays.copyOfRange(skEphIdData, 4, skEphIdData.length);
+
+						if (Arrays.equals(prefixlessEphId, ephId)) {
+							matchCallback.contactMatched(contact);
+							break;
+						}
 					}
 				}
 			}

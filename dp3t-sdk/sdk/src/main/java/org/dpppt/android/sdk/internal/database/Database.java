@@ -130,6 +130,8 @@ public class Database {
 		values.put(Handshakes.PHY_PRIMARY, handshake.getPrimaryPhy());
 		values.put(Handshakes.PHY_SECONDARY, handshake.getSecondaryPhy());
 		values.put(Handshakes.TIMESTAMP_NANOS, handshake.getTimestampNanos());
+		values.put(Handshakes.KETJU_USER_PREFIX, handshake.getKetjuUserPrefix());
+		values.put(Handshakes.KETJU_DISTANCE, handshake.getKetjuDistance());
 		databaseThread.post(() -> {
 			db.insert(Handshakes.TABLE_NAME, null, values);
 			BroadcastHelper.sendUpdateBroadcast(context);
@@ -174,8 +176,10 @@ public class Database {
 			String primaryPhy = cursor.getString(cursor.getColumnIndexOrThrow(Handshakes.PHY_PRIMARY));
 			String secondaryPhy = cursor.getString(cursor.getColumnIndexOrThrow(Handshakes.PHY_SECONDARY));
 			long timestampNanos = cursor.getLong(cursor.getColumnIndexOrThrow(Handshakes.TIMESTAMP_NANOS));
+			String ketjuUserPrefix = cursor.getString(cursor.getColumnIndexOrThrow(Handshakes.KETJU_USER_PREFIX));
+			double ketjuDistance = cursor.getDouble(cursor.getColumnIndexOrThrow(Handshakes.KETJU_DISTANCE));
 			Handshake handShake = new Handshake(id, timestamp, ephId, txPowerLevel, rssi, primaryPhy, secondaryPhy,
-					timestampNanos);
+					timestampNanos, ketjuUserPrefix, ketjuDistance);
 			handshakes.add(handShake);
 		}
 		cursor.close();
@@ -209,6 +213,12 @@ public class Database {
 		values.put(Contacts.EPHID, contact.getEphId().getData());
 		values.put(Contacts.DATE, contact.getDate());
 		values.put(Contacts.WINDOW_COUNT, contact.getWindowCount());
+		values.put(Contacts.KETJU_USER_PREFIX, contact.getKetjuUserPrefix());
+		values.put(Contacts.KETJU_START_DATE, contact.getKetjuStartDate());
+		values.put(Contacts.KETJU_END_DATE, contact.getKetjuEndDate());
+		values.put(Contacts.KETJU_MINUTES, contact.getKetjuMinutes());
+		values.put(Contacts.KETJU_MEAN_ATTENUATION, contact.getKetjuMeanAttenuation());
+		values.put(Contacts.KETJU_MEAN_DISTANCE, contact.getKetjuMeanDistance());
 		db.insertWithOnConflict(Contacts.TABLE_NAME, null, values, CONFLICT_IGNORE);
 	}
 
@@ -242,7 +252,13 @@ public class Database {
 			EphId ephid = new EphId(cursor.getBlob(cursor.getColumnIndexOrThrow(Contacts.EPHID)));
 			int windowCount = cursor.getInt(cursor.getColumnIndexOrThrow(Contacts.WINDOW_COUNT));
 			int associatedKnownCase = cursor.getInt(cursor.getColumnIndexOrThrow(Contacts.ASSOCIATED_KNOWN_CASE));
-			Contact contact = new Contact(id, date, ephid, windowCount, associatedKnownCase);
+			String ketjuUserPrefix = cursor.getString(cursor.getColumnIndexOrThrow(Contacts.KETJU_USER_PREFIX));
+			long ketjuStartDate = cursor.getInt(cursor.getColumnIndexOrThrow(Contacts.KETJU_START_DATE));
+			long ketjuEndDate = cursor.getInt(cursor.getColumnIndexOrThrow(Contacts.KETJU_END_DATE));
+			int ketjuMinutes = cursor.getInt(cursor.getColumnIndexOrThrow(Contacts.KETJU_MINUTES));
+			double ketjuMeanAttenuation = cursor.getDouble(cursor.getColumnIndexOrThrow(Contacts.KETJU_MEAN_ATTENUATION));
+			double ketjuMeanDistance = cursor.getDouble(cursor.getColumnIndexOrThrow(Contacts.KETJU_MEAN_DISTANCE));
+			Contact contact = new Contact(id, date, ephid, windowCount, associatedKnownCase, ketjuUserPrefix, ketjuStartDate, ketjuEndDate, ketjuMinutes, ketjuMeanAttenuation, ketjuMeanDistance);
 			contacts.add(contact);
 		}
 		cursor.close();

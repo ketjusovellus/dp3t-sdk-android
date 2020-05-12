@@ -37,4 +37,14 @@ public class EphId {
 		return Arrays.hashCode(data);
 	}
 
+	// Get human readable text from prefixed bytes.
+	public String getKetjuUserPrefix() {
+		if (data != null && data.length > 4) {
+			byte[] prefix = Arrays.copyOfRange(data, 0, 4);
+			return new String(prefix);
+		}
+		else {
+			return null;
+		}
+	}
 }

@@ -22,7 +22,8 @@ import org.dpppt.android.sdk.internal.database.models.Handshake;
 
 public class ContactsFactory {
 
-	private static final long WINDOW_DURATION = 5 * 60 * 1000l;
+	private static final int WINDOW_LENGTH_IN_MINUTES = 5;
+	private static final int WINDOW_DURATION = WINDOW_LENGTH_IN_MINUTES * 60 * 1000;
 
 	public static List<Contact> mergeHandshakesToContacts(Context context, List<Handshake> handshakes) {
 		HashMap<EphId, List<Handshake>> handshakeMapping = new HashMap<>();
@@ -42,24 +43,36 @@ public class ContactsFactory {
 		for (List<Handshake> handshakeList : handshakeMapping.values()) {
 
 			int contactCounter = 0;
+			List<Double> ketjuMeans = new ArrayList<>();
 
 			long startTime = min(handshakeList, (h) -> h.getTimestamp());
+			long ketjuStartDate = startTime;
+			long ketjuEndDate = startTime;
 			for (long offset = 0; offset < CryptoModule.MILLISECONDS_PER_EPOCH; offset += WINDOW_DURATION) {
 				long windowStart = startTime + offset;
 				long windowEnd = startTime + offset + WINDOW_DURATION;
 				Double windowMean = mean(handshakeList, (h) -> h.getTimestamp() >= windowStart && h.getTimestamp() < windowEnd);
 
 				if (windowMean != null && windowMean < appConfigManager.getContactAttenuationThreshold()) {
+					if (contactCounter == 0) ketjuStartDate = windowStart;
+					ketjuEndDate = windowEnd;
+					ketjuMeans.add(windowMean);
 					contactCounter++;
 				}
 			}
 
 			if (contactCounter > 0) {
+				int ketjuMinutes = contactCounter * WINDOW_LENGTH_IN_MINUTES;
+				double ketjuMeanAttenuation = average(ketjuMeans);
+				double ketjuMeanDistance = Math.pow(10, ketjuMeanAttenuation / 20) / 1000.0;
+
+				EphId ephId = handshakeList.get(0).getEphId();
 				contacts.add(
 						new Contact(-1, floorTimestampToBucket(handshakeList.get(0).getTimestamp()),
-								handshakeList.get(0).getEphId(),
+								ephId,
 								contactCounter,
-								0));
+								0,
+								ephId.getKetjuUserPrefix(), ketjuStartDate, ketjuEndDate, ketjuMinutes, ketjuMeanAttenuation, ketjuMeanDistance));
 			}
 		}
 
@@ -83,6 +96,17 @@ public class ContactsFactory {
 		} else {
 			return null;
 		}
+	}
+
+	private static double average(List<Double> list) {
+		Double sum = 0.0;
+		if(!list.isEmpty()) {
+			for (Double item: list) {
+				sum += item;
+			}
+			return sum / list.size();
+		}
+		return sum;
 	}
 
 	private static <T> Long min(List<T> values, ToLongConverter<T> converter) {

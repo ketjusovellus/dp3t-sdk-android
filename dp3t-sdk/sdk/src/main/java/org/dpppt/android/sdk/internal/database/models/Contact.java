@@ -19,12 +19,27 @@ public class Contact {
 	private int windowCount;
 	private int associatedKnownCase;
 
-	public Contact(int id, long date, EphId ephId, int windowCount, int associatedKnownCase) {
+	private String ketjuUserPrefix;
+	private long ketjuStartDate;
+	private long ketjuEndDate;
+	private int ketjuMinutes;
+	private double ketjuMeanAttenuation;
+	private double ketjuMeanDistance;
+
+	public Contact(int id, long date, EphId ephId, int windowCount, int associatedKnownCase,
+				   String ketjuUserPrefix, long ketjuStartDate, long ketjuEndDate, int ketjuMinutes, double ketjuMeanAttenuation, double ketjuMeanDistance) {
 		this.id = id;
 		this.date = date;
 		this.ephId = ephId;
 		this.windowCount = windowCount;
 		this.associatedKnownCase = associatedKnownCase;
+
+		this.ketjuUserPrefix = ketjuUserPrefix;
+		this.ketjuStartDate = ketjuStartDate;
+		this.ketjuEndDate = ketjuEndDate;
+		this.ketjuMinutes = ketjuMinutes;
+		this.ketjuMeanAttenuation = ketjuMeanAttenuation;
+		this.ketjuMeanDistance = ketjuMeanDistance;
 	}
 
 	public EphId getEphId() {
@@ -47,4 +62,27 @@ public class Contact {
 		return id;
 	}
 
+	public String getKetjuUserPrefix() {
+		return ketjuUserPrefix;
+	}
+
+	public long getKetjuStartDate() {
+		return ketjuStartDate;
+	}
+
+	public long getKetjuEndDate() {
+		return ketjuEndDate;
+	}
+
+	public int getKetjuMinutes() {
+		return ketjuMinutes;
+	}
+
+	public double getKetjuMeanAttenuation() {
+		return ketjuMeanAttenuation;
+	}
+
+	public double getKetjuMeanDistance() {
+		return ketjuMeanDistance;
+	}
 }

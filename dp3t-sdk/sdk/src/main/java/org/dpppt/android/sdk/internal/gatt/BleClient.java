@@ -164,9 +164,12 @@ public class BleClient {
 	}
 
 	private Handshake createHandshake(EphId ephId, ScanResult scanResult, int power) {
+		String ketjuUserPrefix = "";
+		if (ephId != null) ketjuUserPrefix = ephId.getKetjuUserPrefix();
+		double ketjuDistance = Math.pow(10, (power - scanResult.getRssi()) / 20.0) / 1000.0;
 		return new Handshake(-1, System.currentTimeMillis(), ephId, power, scanResult.getRssi(),
 				BleCompat.getPrimaryPhy(scanResult), BleCompat.getSecondaryPhy(scanResult),
-				scanResult.getTimestampNanos());
+				scanResult.getTimestampNanos(), ketjuUserPrefix, ketjuDistance);
 	}
 
 	public synchronized void stopScan() {

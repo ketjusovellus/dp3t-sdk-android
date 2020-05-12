@@ -50,7 +50,7 @@ public class CryptoBenchmark {
 							ArrayList<Contact> contacts = new ArrayList<>();
 							for (int x = 0; x < NUMBER_OF_CONTACTS_PER_DAY; x++) {
 								contacts.add(new Contact(0, new DayDate().getStartOfDayTimestamp(),
-										new EphId(new byte[CryptoModule.EPHID_LENGTH]), 0, 0));
+										new EphId(new byte[CryptoModule.EPHID_LENGTH]), 0, 0, 1589232300000L, 1589232600000L, 5, 31.6, 0.03));
 							}
 							return contacts;
 						},

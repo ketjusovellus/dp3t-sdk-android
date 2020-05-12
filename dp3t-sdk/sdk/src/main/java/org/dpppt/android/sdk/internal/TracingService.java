@@ -283,11 +283,12 @@ public class TracingService extends Service {
 	public static void scheduleNextServerRestart(Context context) {
 		long nextEpochStart = CryptoModule.getInstance(context).getCurrentEpochStart() + CryptoModule.MILLISECONDS_PER_EPOCH;
 		long nextAdvertiseChange = nextEpochStart;
-		String calibrationTestDeviceName = AppConfigManager.getInstance(context).getCalibrationTestDeviceName();
-		if (calibrationTestDeviceName != null) {
-			long now = System.currentTimeMillis();
-			nextAdvertiseChange = now - (now % (60 * 1000)) + 60 * 1000;
-		}
+		// Don't change advertisement times even with prefixed EphIDs.
+//		String calibrationTestDeviceName = AppConfigManager.getInstance(context).getCalibrationTestDeviceName();
+//		if (calibrationTestDeviceName != null) {
+//			long now = System.currentTimeMillis();
+//			nextAdvertiseChange = now - (now % (60 * 1000)) + 60 * 1000;
+//		}
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(context, TracingServiceBroadcastReceiver.class);
 		intent.setAction(ACTION_RESTART_SERVER);

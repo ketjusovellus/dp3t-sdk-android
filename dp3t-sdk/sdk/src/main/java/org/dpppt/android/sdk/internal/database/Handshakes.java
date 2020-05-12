@@ -21,6 +21,8 @@ interface Handshakes {
 	String PHY_PRIMARY = "phy_primary";
 	String PHY_SECONDARY = "phy_secondary";
 	String TIMESTAMP_NANOS = "timestamp_nanos";
+	String KETJU_USER_PREFIX = "ketjuUserPrefix";
+	String KETJU_DISTANCE = "ketjuDistance";
 
 	String[] PROJECTION = {
 			ID,
@@ -30,7 +32,9 @@ interface Handshakes {
 			RSSI,
 			PHY_PRIMARY,
 			PHY_SECONDARY,
-			TIMESTAMP_NANOS
+			TIMESTAMP_NANOS,
+			KETJU_USER_PREFIX,
+			KETJU_DISTANCE
 	};
 
 	static String create() {
@@ -42,7 +46,9 @@ interface Handshakes {
 				RSSI + " INTEGER," +
 				PHY_PRIMARY + " TEXT," +
 				PHY_SECONDARY + " TEXT," +
-				TIMESTAMP_NANOS + " INTEGER" +
+				TIMESTAMP_NANOS + " INTEGER, " +
+				KETJU_USER_PREFIX + " TEXT," +
+				KETJU_DISTANCE + " REAL" +
 				")";
 	}
 
